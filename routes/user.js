@@ -28,4 +28,30 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await Users.findById(req.params.id);
+
+    if (!user) {
+      return res.status(400).json({ msg: 'There is no user' });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    await Users.findOneAndRemove(req.params.id);
+
+    res.json({ msg: 'User deleted' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
