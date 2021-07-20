@@ -34,7 +34,7 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const user = await Users.findById(req.params.id);
 
@@ -50,10 +50,16 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 router.delete('/:id', auth, async (req, res) => {
-  try {
-    await Users.findOneAndRemove(req.params.id);
+  const admin = await Users.findById(req.user.id).select('-password');
 
-    res.json({ msg: 'User deleted' });
+  try {
+    if (admin.role === 'admin') {
+      await Users.findOneAndRemove(req.params.id);
+
+      res.json({ msg: 'User deleted' });
+    } else {
+      res.status(400).send('Your are not a admin');
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
