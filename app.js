@@ -16,6 +16,7 @@ app.get('/ping', (req, res) => {
 
 // Define Routes
 app.use('/api/manageUsers', require('./routes/manageUsers'));
+app.use('/api/auth', require('./routes/auth'));
 
 const PORT = process.env.PORT || 5000;
 
