@@ -49,6 +49,21 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.get('/', auth, async (req, res) => {
+  const admin = await Users.findById(req.user.id).select('-password');
+  try {
+    if (admin.role === 'admin') {
+      const users = await Users.find({});
+      res.json(users);
+    } else {
+      return res.status(400).json({ msg: 'You are not a admin' });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 router.delete('/:id', auth, async (req, res) => {
   const admin = await Users.findById(req.user.id).select('-password');
 
