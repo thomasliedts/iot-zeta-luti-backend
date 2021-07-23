@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 
 const Users = require('../models/Users');
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const admin = await Users.findById(req.user.id).select('-password');
   const { email, password, role } = req.body;
   try {
